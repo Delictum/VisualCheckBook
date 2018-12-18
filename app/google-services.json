@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "972939967504",
+    "firebase_url": "https://visioncheckbook.firebaseio.com",
+    "project_id": "visioncheckbook",
+    "storage_bucket": "visioncheckbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972939967504:android:68fa60de7b33312d",
+        "android_client_info": {
+          "package_name": "com.visualcheckbook.visualcheckbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972939967504-ucu9t1klk7fbll98qka87nvstfu44m78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.visualcheckbook.visualcheckbook",
+            "certificate_hash": "52a975ac8581c570710ccbac19e84023182edf82"
+          }
+        },
+        {
+          "client_id": "972939967504-v9vmk5km3d8o5tfth4bubc2rfrv5a6d9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6Vjb0VQODjG6XCLcIZIm-l05n8VQl7GI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972939967504-v9vmk5km3d8o5tfth4bubc2rfrv5a6d9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
