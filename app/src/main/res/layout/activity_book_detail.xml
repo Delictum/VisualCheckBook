@@ -6,22 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".BookDetailActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolbarStyle" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <LinearLayout
-            android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
             android:theme="@style/AlertDialog.AppCompat.Light">
 
             <ImageView
                 android:id="@+id/ivBookCover"
-                android:layout_marginTop="60dp"
                 android:layout_width="280dp"
-                android:layout_height="280dp" />
+                android:layout_height="280dp"
+                android:layout_marginTop="5dp" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -42,10 +47,10 @@
                 android:textSize="22sp" />
 
             <View
-                android:background="@android:color/darker_gray"
                 android:layout_width="280dp"
                 android:layout_height="1px"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,15 +80,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"
-                tools:layout_editor_absoluteX="148dp"
-                tools:layout_editor_absoluteY="527dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:layout_editor_absoluteX="148dp"
+                tools:layout_editor_absoluteY="527dp" />
         </LinearLayout>
     </ScrollView>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolbarStyle" />
 
 </android.support.constraint.ConstraintLayout>

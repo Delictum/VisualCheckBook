@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         if (bookAdapter != null)
                             bookAdapter.notifyDataSetChanged();
 
-                        Isbn = searchString;
+                        BookDetailActivity.Isbn = searchString;
                         // Launch the detail view passing book as an extra
                         Intent intent = new Intent(MainActivity.this, BookDetailActivity.class);
                         intent.putExtra(BOOK_DETAIL_KEY, bookAdapter.getItem(0));

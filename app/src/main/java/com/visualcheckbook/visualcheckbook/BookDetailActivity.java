@@ -44,6 +44,8 @@ public class BookDetailActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private Drawer.Result drawerResult = null;
 
+    public static String Isbn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +79,23 @@ public class BookDetailActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         mAddButton = (Button) findViewById(R.id.add_button);
+        if (databaseHelper.tryGetBook(Isbn)) {
+            mAddButton.setText("Del");
+        }
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseHelper.addBook(MainActivity.Isbn, tvTitle.getText().toString(), tvAuthor.getText().toString());
-                ActivityHelper.showToast("Stored successfully!", getApplicationContext());
+                Button currentStateButton = (Button)v;
+                String btnName = currentStateButton.getText().toString();
+                if (btnName.contains("Add")) {
+                    databaseHelper.addBook(Isbn, tvTitle.getText().toString(), tvAuthor.getText().toString());
+                    ActivityHelper.showToast("Saved successfully!", getApplicationContext());
+                    mAddButton.setText("Del");
+                } else {
+                    databaseHelper.deleteBook(Isbn);
+                    ActivityHelper.showToast("Successfully deleted!", getApplicationContext());
+                    mAddButton.setText("Add");
+                }
             }
         });
     }

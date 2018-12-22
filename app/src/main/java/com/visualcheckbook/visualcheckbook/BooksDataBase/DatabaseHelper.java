@@ -51,44 +51,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addBook(String isbn, String name, String author) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        //adding user name in users table
-        ContentValues values = new ContentValues();
-        values.put(KEY_ISBN, isbn);
-        // db.insert(TABLE_USER, null, values);
-        long id = db.insertWithOnConflict(TABLE_BOOK, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-
-        //adding user hobby in users_hobby table
-        ContentValues valuesName = new ContentValues();
-        valuesName.put(KEY_ID, id);
-        valuesName.put(KEY_BOOK_NAME, name);
-        db.insert(TABLE_BOOK_NAME, null, valuesName);
-
-        //adding user city in users_city table
-        ContentValues valuesAuthor = new ContentValues();
-        valuesAuthor.put(KEY_ID, id);
-        valuesAuthor.put(KEY_BOOK_AUTHOR, author);
-        db.insert(TABLE_BOOK_AUTHOR, null, valuesAuthor);
-    }
-
     public ArrayList<BookModel> getAllBooks() {
         ArrayList<BookModel> booksModelArrayList = new ArrayList<BookModel>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_BOOK;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-        // looping through all rows and adding to list
+
         if (c.moveToFirst()) {
             do {
                 BookModel bookModel = new BookModel();
                 bookModel.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 bookModel.setIsbn(c.getString(c.getColumnIndex(KEY_ISBN)));
 
-                //getting user hobby where id = id from user_hobby table
                 String selectNameQuery = "SELECT  * FROM " + TABLE_BOOK_NAME + " WHERE " +KEY_ID+ " = " + bookModel.getId();
 
-                //SQLiteDatabase dbhobby = this.getReadableDatabase();
                 Cursor cursorName = db.rawQuery(selectNameQuery, null);
 
                 if (cursorName.moveToFirst()) {
@@ -97,9 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     } while (cursorName.moveToNext());
                 }
 
-                //getting user city where id = id from user_city table
                 String selectAuthorQuery = "SELECT  * FROM " + TABLE_BOOK_AUTHOR + " WHERE " + KEY_ID + " = " + bookModel.getId();;
-                //SQLiteDatabase dbCity = this.getReadableDatabase();
+
                 Cursor cursorAuthor = db.rawQuery(selectAuthorQuery, null);
 
                 if (cursorAuthor.moveToFirst()) {
@@ -108,45 +84,75 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     } while (cursorAuthor.moveToNext());
                 }
 
-                // adding to Students list
                 booksModelArrayList.add(bookModel);
             } while (c.moveToNext());
         }
         return booksModelArrayList;
     }
 
+    public Boolean tryGetBook(String isbn) {
+        String selectQuery = "SELECT  * FROM " + TABLE_BOOK + " WHERE " + KEY_ISBN + "=" + isbn;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.getCount() > 0)
+            return true;
+        return false;
+    }
+
+    public void addBook(String isbn, String name, String author) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ISBN, isbn);
+
+        long id = db.insertWithOnConflict(TABLE_BOOK, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+
+        ContentValues valuesName = new ContentValues();
+        valuesName.put(KEY_ID, id);
+        valuesName.put(KEY_BOOK_NAME, name);
+        db.insert(TABLE_BOOK_NAME, null, valuesName);
+
+        ContentValues valuesAuthor = new ContentValues();
+        valuesAuthor.put(KEY_ID, id);
+        valuesAuthor.put(KEY_BOOK_AUTHOR, author);
+        db.insert(TABLE_BOOK_AUTHOR, null, valuesAuthor);
+    }
+
     public void updateBook(int id, String isbn, String name, String author) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // updating name in users table
         ContentValues values = new ContentValues();
         values.put(KEY_ISBN, isbn);
         db.update(TABLE_BOOK, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
 
-        // updating hobby in users_hobby table
         ContentValues valuesName = new ContentValues();
         valuesName.put(KEY_BOOK_NAME, name);
         db.update(TABLE_BOOK_NAME, valuesName, KEY_ID + " = ?", new String[]{String.valueOf(id)});
 
-        // updating city in users_city table
         ContentValues valuesAuthor = new ContentValues();
         valuesAuthor.put(KEY_BOOK_AUTHOR, author);
         db.update(TABLE_BOOK_AUTHOR, valuesAuthor, KEY_ID + " = ?", new String[]{String.valueOf(id)});
     }
 
     public void deleteBook(int id) {
-
-        // delete row in students table based on id
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //deleting from users table
         db.delete(TABLE_BOOK, KEY_ID + " = ?",new String[]{String.valueOf(id)});
-
-        //deleting from users_hobby table
         db.delete(TABLE_BOOK_NAME, KEY_ID + " = ?", new String[]{String.valueOf(id)});
-
-        //deleting from users_city table
         db.delete(TABLE_BOOK_AUTHOR, KEY_ID + " = ?",new String[]{String.valueOf(id)});
     }
 
+    public void deleteBook(String isbn) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_BOOK + " WHERE " + KEY_ISBN + "=" + isbn;
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+        String id  = c.getString(c.getColumnIndex(KEY_ID));
+
+        db.delete(TABLE_BOOK, KEY_ID + " = ?",new String[]{String.valueOf(id)});
+        db.delete(TABLE_BOOK_NAME, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_BOOK_AUTHOR, KEY_ID + " = ?",new String[]{String.valueOf(id)});
+    }
 }
