@@ -1,6 +1,7 @@
 package com.visualcheckbook.visualcheckbook;
 
 import android.app.Activity;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
         String ISBN = ParserISBN(allText);
         if (ISBN == null)
-            ActivityHelper.showToast("Incorrect recognition of ISBN. Take a new photo and try again.", getApplicationContext());
+            ActivityHelper.showToast("Incorrect recognition of ISBN. Take a new photo or try to rotate the image and try again.", getApplicationContext());
         else
             queryBooks(ISBN);
     }
@@ -215,6 +216,15 @@ public class MainActivity extends AppCompatActivity {
         return text.contains("ISBN");
     }
 
+    private void RotateImage() {
+        angle += 90;
+        mImageView.animate().rotation(angle).start();
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        mSelectedImage = Bitmap.createBitmap(mSelectedImage, 0, 0, mSelectedImage.getWidth(), mSelectedImage.getHeight(), matrix, true);
+    }
+
     private void initCustomModel() {
         new LockOrientation(this).lock();
 
@@ -234,8 +244,7 @@ public class MainActivity extends AppCompatActivity {
         mRotationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                angle += 90;
-                mImageView.animate().rotation(angle).start();
+                RotateImage();
             }
         });
     }
