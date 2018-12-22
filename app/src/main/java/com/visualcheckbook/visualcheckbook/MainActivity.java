@@ -1,6 +1,7 @@
 package com.visualcheckbook.visualcheckbook;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ActivityNotFoundException;
@@ -8,7 +9,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -20,12 +20,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.provider.MediaStore;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.visualcheckbook.visualcheckbook.BookAPI.Book;
+import com.visualcheckbook.visualcheckbook.BookAPI.BookAdapter;
+import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
 import com.visualcheckbook.visualcheckbook.Firebase.GraphicOverlay;
 import com.visualcheckbook.visualcheckbook.Firebase.GraphicOverlay.Graphic;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -37,30 +40,47 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.visualcheckbook.visualcheckbook.Firebase.TextGraphic;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+
+import static android.graphics.BitmapFactory.*;
 
 
 public class MainActivity extends AppCompatActivity {
     private ImageView mImageView;
     private Button mTextButton;
     private Button mCameraButton;
+    private Button mRotationButton;
     private Bitmap mSelectedImage;
     private GraphicOverlay mGraphicOverlay;
-    private Integer mImageMaxWidth; // Max width (portrait mode)
-    private Integer mImageMaxHeight; // Max height (portrait mode)
-
-    //-------------------------------------------------------------------------
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private String pictureImagePath = "";
 
     private Toolbar mToolbar;
     private Drawer.Result drawerResult = null;
+
+    private Uri outputFileUri;
+    private BookClient client;
+    private BookAdapter bookAdapter;
+
+    private Integer mImageMaxWidth; // portrait mode
+    private Integer mImageMaxHeight; // portrait mode
+    private Integer angle = 0;
+
+    private String pictureImagePath = "";
+    public static String Isbn = "";
+
+    public static final String BOOK_DETAIL_KEY = "book";
+    private static final Integer REQUEST_IMAGE_CAPTURE = 1;
+    public static final String TAG = "VisualCheckBook";
 
 
     @Override
@@ -68,6 +88,59 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initCustomModel();
+    }
+
+    private void initListBooks() {
+        ArrayList<Book> aBooks = new ArrayList<Book>();
+        bookAdapter = new BookAdapter(this, aBooks);
+    }
+
+    private void queryBooks(final String searchString) {
+
+        client = new BookClient();
+        client.getBooks(searchString, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray docs = null;
+                    if(response != null) {
+                        // Get the docs json array
+                        docs = response.getJSONArray("docs");
+
+                        // Parse json array into array of model objects
+                        final ArrayList<Book> books = Book.fromJson(docs);
+
+                        if (books == null) {
+                            ActivityHelper.showToast("Unfortunately the library does not contain data on the book.", getApplicationContext());
+                            return;
+                        }
+
+                        if (bookAdapter != null)
+                            bookAdapter.clear();
+                        // Load model objects into the adapter
+                        for (Book book : books) {
+                            bookAdapter.add(book); // add book through the adapter
+                        }
+                        if (bookAdapter != null)
+                            bookAdapter.notifyDataSetChanged();
+
+                        Isbn = searchString;
+                        // Launch the detail view passing book as an extra
+                        Intent intent = new Intent(MainActivity.this, BookDetailActivity.class);
+                        intent.putExtra(BOOK_DETAIL_KEY, bookAdapter.getItem(0));
+                        startActivity(intent);
+                    }
+                } catch (JSONException e) {
+                    if (BuildConfig.DEBUG) {
+                        Log.e(TAG, "Invalid JSON format", e);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                ActivityHelper.showToast("Problem connecting to server.", getApplicationContext());
+            }
+        });
     }
 
     private void runTextRecognition() {
@@ -119,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
 
         String ISBN = ParserISBN(allText);
         if (ISBN == null)
-            Toast.makeText(getApplicationContext(), "Incorrect recognition of ISBN. Take a new photo and try again.", Toast.LENGTH_SHORT).show();
+            ActivityHelper.showToast("Incorrect recognition of ISBN. Take a new photo and try again.", getApplicationContext());
         else
-            Toast.makeText(getApplicationContext(), "ISBN: " + ISBN, Toast.LENGTH_SHORT).show();
+            queryBooks(ISBN);
     }
 
     private String ParserISBN(String text) {
@@ -150,28 +223,36 @@ public class MainActivity extends AppCompatActivity {
         new LockOrientation(this).lock();
 
         initRecognition();
-
         initCamera();
+        initRotate();
 
         initToolbar();
         initDrawerMenu();
-
         initSliding();
+
+        initListBooks();
+    }
+
+    private void initRotate() {
+        mRotationButton = findViewById(R.id.rotate_button);
+        mRotationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                angle += 90;
+                mImageView.animate().rotation(angle).start();
+            }
+        });
     }
 
     private void initSliding() {
         mImageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
-            public void onSwipeTop() {
-                ActivityHelper.showToast("top", getApplicationContext());
-            }
             public void onSwipeRight() {
+
                 drawerResult.openDrawer();
             }
             public void onSwipeLeft() {
+
                 dispatchTakePictureIntent();
-            }
-            public void onSwipeBottom() {
-                ActivityHelper.showToast("bottom", getApplicationContext());
             }
 
             public boolean onTouch(View v, MotionEvent event) {
@@ -221,11 +302,9 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-                            Toast.makeText(MainActivity.this, MainActivity.this.getString(((Nameable) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent(MainActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
-
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -237,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                                         drawerResult.updateBadge(String.valueOf(badge - 1), position);
                                     }
                                 } catch (Exception e) {
-                                    Log.d("test", "Не нажимайте на бейдж, содержащий плюс! :)");
+
                                 }
                             }
                         }
@@ -248,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка длинного клика, например, только для SecondaryDrawerItem
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof SecondaryDrawerItem) {
-                            Toast.makeText(MainActivity.this, MainActivity.this.getString(((SecondaryDrawerItem) drawerItem).getNameRes()), Toast.LENGTH_SHORT).show();
+
                         }
                         return false;
                     }
@@ -310,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = null;
         try {
             is = assetManager.open(filePath);
-            bitmap = BitmapFactory.decodeStream(is);
+            bitmap = decodeStream(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -320,54 +399,29 @@ public class MainActivity extends AppCompatActivity {
 
     //----------------------------------------------------------------------------------------------
 
-    private Bitmap getResizedImg (Bitmap imageBitmap) {
-        mSelectedImage = imageBitmap;
-
-        // Get the dimensions of the View
-        Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
-
-        int targetWidth = targetedSize.first;
-        int maxHeight = targetedSize.second;
-
-        // Determine how much to scale down the image
-        float scaleFactor =
-                Math.max(
-                        (float) mSelectedImage.getWidth() / (float) targetWidth,
-                        (float) mSelectedImage.getHeight() / (float) maxHeight);
-
-        Bitmap resizedBitmap =
-                Bitmap.createScaledBitmap(
-                        mSelectedImage,
-                        (int) (mSelectedImage.getWidth() / scaleFactor),
-                        (int) (mSelectedImage.getHeight() / scaleFactor),
-                        true);
-        return resizedBitmap;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 File imgFile = new File(pictureImagePath);
                 if (imgFile.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    myBitmap = getResizedImg(myBitmap);
-                    mImageView.setImageBitmap(myBitmap);
+                    mImageView.setImageResource(0);
+                    mImageView.setImageURI(outputFileUri);
+                    mSelectedImage = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
 
-                    //Set active 'find text'
                     if (!mTextButton.isEnabled())
                         mTextButton.setEnabled(true);
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast toast = Toast.makeText(this, "Cancel operation.", Toast.LENGTH_SHORT);
-                toast.show();
+                ActivityHelper.showToast("Cancel operation.", getApplicationContext());
             } else {
                 throw new Exception();
             }
         } catch (Exception e) {
-            String errorMessage = "Error receiving photos.";
-            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            ActivityHelper.showToast("Error receiving photos.", getApplicationContext());
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, "Error receiving photos", e);
+            }
         }
     }
 
@@ -379,43 +433,28 @@ public class MainActivity extends AppCompatActivity {
                     Environment.DIRECTORY_PICTURES);
             pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
             File file = new File(pictureImagePath);
-            Uri outputFileUri = Uri.fromFile(file);
+            outputFileUri = Uri.fromFile(file);
 
             //Get img with open camera
-            Intent cameraIntent = new Intent(android.provider.MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+            Intent cameraIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
             startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
 
         } catch (ActivityNotFoundException e) {
-            String errorMessage = "Your device does not support shooting.";
-            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            ActivityHelper.showToast("Your device does not support shooting.", getApplicationContext());
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Device does not support shooting", e);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        // Закрываем Navigation Drawer по нажатию системной кнопки "Назад" если он открыт
         if (drawerResult.isDrawerOpen()) {
             drawerResult.closeDrawer();
         } else {
             super.onBackPressed();
         }
     }
-    /*// Заглушка, работа с меню
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    // Заглушка, работа с меню
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

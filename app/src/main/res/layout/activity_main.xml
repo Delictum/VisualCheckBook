@@ -47,12 +47,15 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/tool_bar_top_padding"
-        android:transitionName="actionBar" />
+        style="@style/ToolbarStyle" />
+
+    <Button
+        android:id="@+id/rotate_button"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginLeft="264dp"
+        android:text="@string/rotation_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

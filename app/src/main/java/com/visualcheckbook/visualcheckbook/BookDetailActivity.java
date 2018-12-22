@@ -1,18 +1,28 @@
 package com.visualcheckbook.visualcheckbook;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.squareup.picasso.Picasso;
 import com.visualcheckbook.visualcheckbook.BookAPI.Book;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
+import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,11 +39,29 @@ public class BookDetailActivity extends AppCompatActivity {
     private TextView tvPageCount;
     private BookClient client;
 
+    private Button mAddButton;
+    private DatabaseHelper databaseHelper;
+    private Toolbar mToolbar;
+    private Drawer.Result drawerResult = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
+        initCustomModel();
+    }
+
+    private void initCustomModel() {
+        new LockOrientation(this).lock();
+
+        initComponents();
+        initToolbar();
+        initDrawerMenu();
+    }
+
+    private void initComponents() {
+        new LockOrientation(this).lock();
         // Fetch views
         ivBookCover = (ImageView) findViewById(R.id.ivBookCover);
         tvTitle = (TextView) findViewById(R.id.tvTitle);
@@ -41,8 +69,74 @@ public class BookDetailActivity extends AppCompatActivity {
         tvPublisher = (TextView) findViewById(R.id.tvPublisher);
         tvPageCount = (TextView) findViewById(R.id.tvPageCount);
         // Use the book to populate the data into our views
-        Book book = (Book) getIntent().getSerializableExtra(BookLibraryActivity.BOOK_DETAIL_KEY);
+
+        //Book book = (Book) getIntent().getSerializableExtra(BookLibraryActivity.BOOK_DETAIL_KEY);
+        Book book = (Book) getIntent().getSerializableExtra(MainActivity.BOOK_DETAIL_KEY);
         loadBook(book);
+
+        databaseHelper = new DatabaseHelper(this);
+
+        mAddButton = (Button) findViewById(R.id.add_button);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseHelper.addBook(MainActivity.Isbn, tvTitle.getText().toString(), tvAuthor.getText().toString());
+                ActivityHelper.showToast("Stored successfully!", getApplicationContext());
+            }
+        });
+    }
+
+    private void initDrawerMenu() {
+        //Sliding menu
+        drawerResult = new Drawer()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withActionBarDrawerToggle(true)
+                .withHeader(R.layout.drawer_header)
+                .addDrawerItems(ActivityHelper.initDrawerItems(4))
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    // Обработка клика
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        if (drawerItem instanceof Nameable) {
+
+                            Intent intent = new Intent(BookDetailActivity.this, MainActivity.class);
+                            startActivity(intent);
+
+                        }
+                        if (drawerItem instanceof Badgeable) {
+                            Badgeable badgeable = (Badgeable) drawerItem;
+                            if (badgeable.getBadge() != null) {
+                                // учтите, не делайте так, если ваш бейдж содержит символ "+"
+                                try {
+                                    int badge = Integer.valueOf(badgeable.getBadge());
+                                    if (badge > 0) {
+                                        drawerResult.updateBadge(String.valueOf(badge - 1), position);
+                                    }
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    }
+                })
+                .withOnDrawerItemLongClickListener(new Drawer.OnDrawerItemLongClickListener() {
+                    @Override
+                    // Обработка длинного клика, например, только для SecondaryDrawerItem
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        if (drawerItem instanceof SecondaryDrawerItem) {
+
+                        }
+                        return false;
+                    }
+                })
+                .build();
+    }
+
+    private  void initToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     // Populate data for the book
@@ -85,11 +179,6 @@ public class BookDetailActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

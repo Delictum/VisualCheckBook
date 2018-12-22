@@ -6,72 +6,84 @@
     android:layout_height="match_parent"
     tools:context=".BookDetailActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".BookListActivity">
+        android:layout_height="match_parent">
 
-        <ScrollView
+        <LinearLayout
+            android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/AlertDialog.AppCompat.Light">
 
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ivBookCover"
+                android:layout_marginTop="60dp"
+                android:layout_width="280dp"
+                android:layout_height="280dp" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
 
-                <ImageView
-                    android:id="@+id/ivBookCover"
-                    android:layout_marginTop="8dp"
-                    android:layout_width="280dp"
-                    android:layout_height="280dp" />
+            <TextView
+                android:id="@+id/tvAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@android:color/black"
+                android:textSize="22sp" />
 
-                <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="32sp"
-                    android:layout_marginTop="8dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp" />
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="280dp"
+                android:layout_height="1px"
+                android:layout_marginTop="8dp" />
 
-                <TextView
-                    android:id="@+id/tvAuthor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:layout_marginTop="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/published_by"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
-                <View
-                    android:background="@android:color/darker_gray"
-                    android:layout_width="280dp"
-                    android:layout_height="1px"
-                    android:layout_marginTop="8dp" />
+            <TextView
+                android:id="@+id/tvPublisher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Published By"
-                    android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvPageCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tvPublisher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" />
+            <Button
+                android:id="@+id/add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                tools:layout_editor_absoluteX="148dp"
+                tools:layout_editor_absoluteY="527dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+        </LinearLayout>
+    </ScrollView>
 
-                <TextView
-                    android:id="@+id/tvPageCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolbarStyle" />
 
 </android.support.constraint.ConstraintLayout>

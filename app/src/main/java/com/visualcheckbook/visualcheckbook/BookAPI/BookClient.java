@@ -20,14 +20,13 @@ public class BookClient {
 
     // Method for accessing the search API
     public void getBooks(final String query, JsonHttpResponseHandler handler) {
-        /*try {
-            String url = getApiUrl("search.json?q=");
+        try {
+            //String url = getApiUrl("search.json?q=");
+            String url = getApiUrl("search.json?q=ISBN:");
             client.get(url + URLEncoder.encode(query, "utf-8"), handler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }*/
-
-        client.get("https://openlibrary.org/api/books?bibkeys=ISBN:9780980200447&jscmd=details&format=json", handler);
+        }
     }
 
     // Method for accessing books API to get publisher and no. of pages in a book.

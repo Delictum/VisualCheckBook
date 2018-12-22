@@ -5,28 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".BookLibraryActivity">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
-        android:indeterminate="true"
-        android:visibility="gone" />
 
     <ListView
         android:id="@+id/lvBooks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/tool_bar_top_padding"
-        android:transitionName="actionBar" />
+        style="@style/ToolbarStyle" />
 
 </android.support.constraint.ConstraintLayout>
