@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mCameraButton;
     private Button mRotationButton;
     private Bitmap mSelectedImage;
-    private GraphicOverlay mGraphicOverlay;
 
     private Toolbar mToolbar;
     private Drawer.Result drawerResult = null;
@@ -176,15 +175,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String allText = "";
-        mGraphicOverlay.clear();
 
         for (int i = 0; i < blocks.size(); i++) {
             List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
             for (int j = 0; j < lines.size(); j++) {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
                 for (int k = 0; k < elements.size(); k++) {
-                    Graphic textGraphic = new com.visualcheckbook.visualcheckbook.Firebase.TextGraphic(mGraphicOverlay, elements.get(k));
-                    mGraphicOverlay.add(textGraphic);
                     allText += elements.get(k).getText() + ";";
                 }
             }
@@ -265,8 +261,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mImageView = findViewById(R.id.image_view);
         mTextButton = findViewById(R.id.button_text);
-
-        mGraphicOverlay = findViewById(R.id.graphic_overlay);
 
         //Set event for button
         mTextButton.setOnClickListener(new View.OnClickListener() {
