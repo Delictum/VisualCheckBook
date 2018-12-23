@@ -16,7 +16,6 @@ final class ActivityHelper {
                 new PrimaryDrawerItem()
                         .withName(R.string.drawer_item_home)
                         .withIcon(FontAwesome.Icon.faw_camera)
-                        .withBadge("99").withIdentifier(1)
                         .setEnabled(currentActivity == 0 ? false : true),
                 new PrimaryDrawerItem()
                         .withName(R.string.drawer_item_library_book)
@@ -25,8 +24,6 @@ final class ActivityHelper {
                 new PrimaryDrawerItem()
                         .withName(R.string.drawer_item_cash_transaction)
                         .withIcon(FontAwesome.Icon.faw_balance_scale)
-                        .withBadge("6")
-                        .withIdentifier(2)
                         .setEnabled(currentActivity == 2 ? false : true),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem()
@@ -36,7 +33,7 @@ final class ActivityHelper {
                 new SecondaryDrawerItem()
                         .withName(R.string.drawer_item_help)
                         .withIcon(FontAwesome.Icon.faw_question)
-                        .setEnabled(false),
+                        .setEnabled(currentActivity == 4 ? false : true),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem()
                         .withName(R.string.drawer_item_contact)

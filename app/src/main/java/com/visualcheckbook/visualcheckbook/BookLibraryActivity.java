@@ -2,13 +2,17 @@ package com.visualcheckbook.visualcheckbook;
 
 import cz.msebera.android.httpclient.Header;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mikepenz.materialdrawer.Drawer;
@@ -35,6 +39,7 @@ public class BookLibraryActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private Drawer.Result drawerResult = null;
+    private RelativeLayout mRelativeLayout;
 
     private ListView mListView;
     private ArrayList<BookModel> bookModelArrayList;
@@ -57,6 +62,7 @@ public class BookLibraryActivity extends AppCompatActivity {
         initDrawerMenu();
         initDataBaseItems();
         initListBooks();
+        initSliding();
     }
 
     private void initDrawerMenu() {
@@ -72,10 +78,13 @@ public class BookLibraryActivity extends AppCompatActivity {
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-
-                            Intent intent = new Intent(BookLibraryActivity.this, MainActivity.class);
-                            startActivity(intent);
-
+                            if (position == 1) {
+                                Intent intent = new Intent(BookLibraryActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            } else if (position == 6) {
+                                Intent intent = new Intent(BookLibraryActivity.this, HeplerTabActivity.class);
+                                startActivity(intent);
+                            }
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
@@ -130,6 +139,20 @@ public class BookLibraryActivity extends AppCompatActivity {
     private void initListBooks() {
         ArrayList<Book> aBooks = new ArrayList<Book>();
         bookAdapter = new BookAdapter(this, aBooks);
+    }
+
+    private void initSliding() {
+        mRelativeLayout = findViewById(R.id.relativeLayoutBookLibrary);
+        mRelativeLayout.setOnTouchListener(new OnSwipeTouchListener(BookLibraryActivity.this) {
+            public void onSwipeRight() {
+
+                drawerResult.openDrawer();
+            }
+
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
     }
 
     private void queryBooks(final String searchString) {

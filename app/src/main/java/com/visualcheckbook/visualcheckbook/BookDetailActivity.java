@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -41,8 +43,10 @@ public class BookDetailActivity extends AppCompatActivity {
 
     private Button mAddButton;
     private DatabaseHelper databaseHelper;
+
     private Toolbar mToolbar;
     private Drawer.Result drawerResult = null;
+    private ScrollView mScrollView;
 
     public static String Isbn;
 
@@ -60,6 +64,7 @@ public class BookDetailActivity extends AppCompatActivity {
         initComponents();
         initToolbar();
         initDrawerMenu();
+        initSliding();
     }
 
     private void initComponents() {
@@ -107,21 +112,25 @@ public class BookDetailActivity extends AppCompatActivity {
                 .withToolbar(mToolbar)
                 .withActionBarDrawerToggle(true)
                 .withHeader(R.layout.drawer_header)
-                .addDrawerItems(ActivityHelper.initDrawerItems(4))
+                .addDrawerItems(ActivityHelper.initDrawerItems(5))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-
-                            Intent intent = new Intent(BookDetailActivity.this, MainActivity.class);
-                            startActivity(intent);
-
+                            if (position == 1) {
+                                Intent intent = new Intent(BookDetailActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            } else if (position == 2) {
+                                Intent intent = new Intent(BookDetailActivity.this, BookLibraryActivity.class);
+                                startActivity(intent);
+                            } else if(position == 6) {
+                                Intent intent = new Intent(BookDetailActivity.this, HeplerTabActivity.class);
+                                startActivity(intent);
+                            }
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
                             if (badgeable.getBadge() != null) {
-                                // учтите, не делайте так, если ваш бейдж содержит символ "+"
                                 try {
                                     int badge = Integer.valueOf(badgeable.getBadge());
                                     if (badge > 0) {
@@ -151,6 +160,20 @@ public class BookDetailActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initSliding() {
+        mScrollView = findViewById(R.id.scrollViewBookDetail);
+        mScrollView.setOnTouchListener(new OnSwipeTouchListener(BookDetailActivity.this) {
+            public void onSwipeRight() {
+
+                drawerResult.openDrawer();
+            }
+
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
     }
 
     // Populate data for the book

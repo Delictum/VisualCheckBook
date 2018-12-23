@@ -305,9 +305,13 @@ public class MainActivity extends AppCompatActivity {
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         if (drawerItem instanceof Nameable) {
-
+                            if (position == 2) {
                                 Intent intent = new Intent(MainActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
+                            } else if (position == 6) {
+                                Intent intent = new Intent(MainActivity.this, HeplerTabActivity.class);
+                                startActivity(intent);
+                            }
                         }
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
