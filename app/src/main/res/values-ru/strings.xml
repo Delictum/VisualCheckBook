@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Visual library book</string>
+    <string name="select_image_for_text_recognition">Добавьте изображение для перевода</string>
+    <string name="find_text_button">Найти книгу</string>
+
+    <string name="drawer_item_home">Камера</string>
+    <string name="drawer_item_library_book">Книжная библиотека</string>
+    <string name="drawer_item_cash_transaction">Денежные переводы</string>
+    <string name="drawer_item_settings">Настройки</string>
+    <string name="drawer_item_help">Помощь</string>
+    <string name="drawer_item_contact">Контакты</string>
+    <string name="published_by">Published By</string>
+    <string name="rotation_button">Поворот</string>
+    <string name="HelperTextCameraActivity">Чтобы сделать фотографию, нажмите «плюс» или проведите пальцем справа-налево по экрану. После загрузки изображения нажмите «Повернуть» (при необходимости) и нажмите «Найти текст».</string>
+    <string name="HelperTextLibraryActivity">Библиотека отображает ваши добавленные книги. При подключении к Интернету вы можете нажать на любую из книг, чтобы увидеть более подробную информацию. Если книг много, вы можете потянуть пальцем сверху-вниз (и наоборот), чтобы увидеть остальные.</string>
+    <string name="HelperTextDetailActivity">После того, как книга будет распознана или выбрана в библиотеке, откроется окно с подробной информацией. При нажатии клавиши «Добавить» / «Удалить» книга будет добавлена / удалена в библиотеке.</string>
+</resources>

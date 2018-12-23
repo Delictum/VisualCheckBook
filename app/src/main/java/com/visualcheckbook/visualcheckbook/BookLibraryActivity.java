@@ -81,7 +81,7 @@ public class BookLibraryActivity extends AppCompatActivity {
                             if (position == 1) {
                                 Intent intent = new Intent(BookLibraryActivity.this, MainActivity.class);
                                 startActivity(intent);
-                            } else if (position == 6) {
+                            } else if (position == 5) {
                                 Intent intent = new Intent(BookLibraryActivity.this, HeplerTabActivity.class);
                                 startActivity(intent);
                             }

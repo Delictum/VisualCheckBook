@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mRotationButton;
     private Bitmap mSelectedImage;
 
-    private Toolbar mToolbar;
-    private Drawer.Result drawerResult = null;
+    public Toolbar mToolbar;
+    public Drawer.Result drawerResult = null;
 
     private Uri outputFileUri;
     private BookClient client;
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                             if (position == 2) {
                                 Intent intent = new Intent(MainActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
-                            } else if (position == 6) {
+                            } else if (position == 5) {
                                 Intent intent = new Intent(MainActivity.this, HeplerTabActivity.class);
                                 startActivity(intent);
                             }

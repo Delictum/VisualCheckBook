@@ -82,7 +82,7 @@ public class HeplerTabActivity extends AppCompatActivity  {
                 .withToolbar(mToolbar)
                 .withActionBarDrawerToggle(true)
                 .withHeader(R.layout.drawer_header)
-                .addDrawerItems(ActivityHelper.initDrawerItems(4))
+                .addDrawerItems(ActivityHelper.initDrawerItems(3))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     // Обработка клика
@@ -180,6 +180,15 @@ public class HeplerTabActivity extends AppCompatActivity  {
                 mCircleImageView3.setImageResource(R.drawable.sky_blue);
                 break;
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
         }
     }
 }

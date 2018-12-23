@@ -21,19 +21,15 @@ final class ActivityHelper {
                         .withName(R.string.drawer_item_library_book)
                         .withIcon(FontAwesome.Icon.faw_book)
                         .setEnabled(currentActivity == 1 ? false : true),
-                new PrimaryDrawerItem()
-                        .withName(R.string.drawer_item_cash_transaction)
-                        .withIcon(FontAwesome.Icon.faw_balance_scale)
-                        .setEnabled(currentActivity == 2 ? false : true),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem()
                         .withName(R.string.drawer_item_settings)
                         .withIcon(FontAwesome.Icon.faw_cog)
-                        .setEnabled(currentActivity == 3 ? false : true),
+                        .setEnabled(currentActivity == 2 ? false : true),
                 new SecondaryDrawerItem()
                         .withName(R.string.drawer_item_help)
                         .withIcon(FontAwesome.Icon.faw_question)
-                        .setEnabled(currentActivity == 4 ? false : true),
+                        .setEnabled(currentActivity == 3 ? false : true),
                 new DividerDrawerItem(),
                 new SecondaryDrawerItem()
                         .withName(R.string.drawer_item_contact)

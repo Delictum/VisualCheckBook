@@ -123,7 +123,7 @@ public class BookDetailActivity extends AppCompatActivity {
                             } else if (position == 2) {
                                 Intent intent = new Intent(BookDetailActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
-                            } else if(position == 6) {
+                            } else if(position == 5) {
                                 Intent intent = new Intent(BookDetailActivity.this, HeplerTabActivity.class);
                                 startActivity(intent);
                             }
@@ -218,5 +218,14 @@ public class BookDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerResult.isDrawerOpen()) {
+            drawerResult.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
