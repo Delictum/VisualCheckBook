@@ -1,33 +1,23 @@
-package com.visualcheckbook.visualcheckbook;
+package com.visualcheckbook.visualcheckbook.Activity;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.squareup.picasso.Picasso;
 import com.visualcheckbook.visualcheckbook.BookAPI.Book;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
-import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
-import com.visualcheckbook.visualcheckbook.Fragments.BookLibraryActivity;
-import com.visualcheckbook.visualcheckbook.Fragments.HelperTabFragment;
+import com.visualcheckbook.visualcheckbook.BooksSQLiteDataBase.DatabaseHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
+import com.visualcheckbook.visualcheckbook.LockOrientation;
+import com.visualcheckbook.visualcheckbook.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,10 +37,6 @@ public class BookDetailActivity extends AppCompatActivity {
     private Button mAddButton;
     private DatabaseHelper databaseHelper;
 
-    private Toolbar mToolbar;
-    private Drawer.Result drawerResult = null;
-    private ScrollView mScrollView;
-
     public static String Isbn;
 
     @Override
@@ -65,9 +51,6 @@ public class BookDetailActivity extends AppCompatActivity {
         new LockOrientation(this).lock();
 
         initComponents();
-        initToolbar();
-        initDrawerMenu();
-        initSliding();
     }
 
     private void initComponents() {
@@ -104,77 +87,6 @@ public class BookDetailActivity extends AppCompatActivity {
                     ActivityHelper.showToast("Successfully deleted!", getApplicationContext());
                     mAddButton.setText("Add");
                 }
-            }
-        });
-    }
-
-    private void initDrawerMenu() {
-        //Sliding menu
-        drawerResult = new Drawer()
-                .withActivity(this)
-                .withToolbar(mToolbar)
-                .withActionBarDrawerToggle(true)
-                .withHeader(R.layout.drawer_header)
-                .addDrawerItems(ActivityHelper.initDrawerItems(5))
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        if (drawerItem instanceof Nameable) {
-                            if (position == 1) {
-                                Intent intent = new Intent(BookDetailActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            } else if (position == 2) {
-                                Intent intent = new Intent(BookDetailActivity.this, BookLibraryActivity.class);
-                                startActivity(intent);
-                            } else if(position == 5) {
-                                Intent intent = new Intent(BookDetailActivity.this, HelperTabFragment.class);
-                                startActivity(intent);
-                            }
-                        }
-                        if (drawerItem instanceof Badgeable) {
-                            Badgeable badgeable = (Badgeable) drawerItem;
-                            if (badgeable.getBadge() != null) {
-                                try {
-                                    int badge = Integer.valueOf(badgeable.getBadge());
-                                    if (badge > 0) {
-                                        drawerResult.updateBadge(String.valueOf(badge - 1), position);
-                                    }
-                                } catch (Exception e) {
-
-                                }
-                            }
-                        }
-                    }
-                })
-                .withOnDrawerItemLongClickListener(new Drawer.OnDrawerItemLongClickListener() {
-                    @Override
-                    // Обработка длинного клика, например, только для SecondaryDrawerItem
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        if (drawerItem instanceof SecondaryDrawerItem) {
-
-                        }
-                        return false;
-                    }
-                })
-                .build();
-    }
-
-    private  void initToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void initSliding() {
-        mScrollView = findViewById(R.id.scrollViewBookDetail);
-        mScrollView.setOnTouchListener(new OnSwipeTouchListener(BookDetailActivity.this) {
-            public void onSwipeRight() {
-
-                drawerResult.openDrawer();
-            }
-
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
             }
         });
     }
@@ -225,8 +137,8 @@ public class BookDetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (drawerResult.isDrawerOpen()) {
-            drawerResult.closeDrawer();
+        if (MainActivity.drawerResult.isDrawerOpen()) {
+            MainActivity.drawerResult.closeDrawer();
         } else {
             super.onBackPressed();
         }

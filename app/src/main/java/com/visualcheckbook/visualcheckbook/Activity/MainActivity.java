@@ -1,4 +1,4 @@
-package com.visualcheckbook.visualcheckbook;
+package com.visualcheckbook.visualcheckbook.Activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -41,11 +41,17 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.visualcheckbook.visualcheckbook.Fragments.BookLibraryActivity;
+import com.visualcheckbook.visualcheckbook.BuildConfig;
+import com.visualcheckbook.visualcheckbook.Fragments.BookLibraryFragment;
 import com.visualcheckbook.visualcheckbook.Fragments.HelperTabFragment;
 import com.visualcheckbook.visualcheckbook.Fragments.SettingsFragment;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
+import com.visualcheckbook.visualcheckbook.Helpers.CustomSettingsHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.ImageHelper;
+import com.visualcheckbook.visualcheckbook.IsbnParser;
+import com.visualcheckbook.visualcheckbook.LockOrientation;
+import com.visualcheckbook.visualcheckbook.OnSwipeTouchListener;
+import com.visualcheckbook.visualcheckbook.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private String pictureImagePath = "";
 
     public static final String TAG = "VisualCheckBook";
+    public static final String VERSION = "1.0.0";
 
     private final String fileSaveImageName = "temp.jpg";
     public static final String BOOK_DETAIL_KEY = "book";
@@ -222,8 +229,30 @@ public class MainActivity extends AppCompatActivity {
         initListBooks();
         initQuestionExitDialog();
 
-        currentPositionDrawerMenu = 1;
         mainLinearLayout = findViewById(R.id.main_liner_layout);
+
+        int valueStartScreen = CustomSettingsHelper.getPositionStartScreen(this);
+        setEnabledDrawerItem(valueStartScreen == 0 ? 1 : valueStartScreen, false);
+        switch (valueStartScreen) {
+            case (0): {
+
+                break;
+            }
+            case (1): {
+                setVisibilityMainLayout(View.INVISIBLE);
+                setEnabledDrawerItem(1, true);
+                setEnabledDrawerItem(2, false);
+                currentFragment = new BookLibraryFragment();
+                break;
+            }
+        }
+
+        if (valueStartScreen != 0) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, currentFragment)
+                    .commit();
+        }
+        currentPositionDrawerMenu = ++valueStartScreen;
     }
 
     private void initRotate() {
@@ -309,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
                             } else if (position == 2) {
 
                                 setVisibilityMainLayout(View.INVISIBLE);
-                                currentFragment = new BookLibraryActivity();
+                                currentFragment = new BookLibraryFragment();
                             } else if (position == 4) {
 
                                 setVisibilityMainLayout(View.INVISIBLE);
@@ -336,11 +365,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.container, currentFragment)
-                                .commit();
-                        currentPositionDrawerMenu = position;
+                        if (position != 0) {
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.container, currentFragment)
+                                    .commit();
+                            currentPositionDrawerMenu = position;
+                        }
                     }
                 })
                 .withOnDrawerItemLongClickListener(new Drawer.OnDrawerItemLongClickListener() {

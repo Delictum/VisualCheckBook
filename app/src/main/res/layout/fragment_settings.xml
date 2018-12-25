@@ -5,26 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolbarStyle" />
-
-    <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/select_language_spinner"
-        style="@style/Widget.AppCompat.Spinner.Underlined"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@color/material_drawer_primary_light"
-        android:entries="@array/list_language"
-        android:spinnerMode="dropdown"
-        android:theme="@style/Spinner" />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/about_developer"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ToolbarStyle" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/select_language_spinner"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/material_drawer_primary_light"
+            android:entries="@array/list_language"
+            android:spinnerMode="dropdown"
+            android:theme="@style/Spinner" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/select_start_screen_spinner"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/material_drawer_primary_light"
+            android:entries="@array/list_start_screen"
+            android:spinnerMode="dropdown"
+            android:theme="@style/Spinner" />
+
+        <Button
+            android:id="@+id/about_developer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_about_developer" />
+
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_about_developer" />
+        android:layout_alignParentBottom="true">
+
+    <TextView
+            android:id="@+id/about_program"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
 </LinearLayout>

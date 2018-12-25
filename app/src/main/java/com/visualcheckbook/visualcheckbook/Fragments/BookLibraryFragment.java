@@ -17,13 +17,13 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.visualcheckbook.visualcheckbook.BookAPI.Book;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookAdapter;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
-import com.visualcheckbook.visualcheckbook.BookDetailActivity;
-import com.visualcheckbook.visualcheckbook.BooksDataBase.BookModel;
-import com.visualcheckbook.visualcheckbook.BooksDataBase.CustomAdapter;
-import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
+import com.visualcheckbook.visualcheckbook.Activity.BookDetailActivity;
+import com.visualcheckbook.visualcheckbook.BooksSQLiteDataBase.BookModel;
+import com.visualcheckbook.visualcheckbook.BooksSQLiteDataBase.CustomAdapter;
+import com.visualcheckbook.visualcheckbook.BooksSQLiteDataBase.DatabaseHelper;
 import com.visualcheckbook.visualcheckbook.BuildConfig;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
-import com.visualcheckbook.visualcheckbook.MainActivity;
+import com.visualcheckbook.visualcheckbook.Activity.MainActivity;
 import com.visualcheckbook.visualcheckbook.OnSwipeTouchListener;
 import com.visualcheckbook.visualcheckbook.R;
 
@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class BookLibraryActivity extends Fragment {
+public class BookLibraryFragment extends Fragment {
     private BookAdapter bookAdapter;
     private BookClient client;
 
@@ -82,15 +82,11 @@ public class BookLibraryActivity extends Fragment {
     }
 
     private void initSliding(View view) {
-        mRelativeLayout = view.findViewById(R.id.relativeLayoutBookLibrary);
+        mRelativeLayout = view.findViewById(R.id.relative_layout_book_library);
         mRelativeLayout.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
             public void onSwipeRight() {
 
                 MainActivity.drawerResult.openDrawer();
-            }
-
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
             }
         });
     }

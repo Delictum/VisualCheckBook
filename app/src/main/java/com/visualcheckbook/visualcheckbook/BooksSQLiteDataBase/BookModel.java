@@ -1,4 +1,4 @@
-package com.visualcheckbook.visualcheckbook.BooksDataBase;
+package com.visualcheckbook.visualcheckbook.BooksSQLiteDataBase;
 
 import java.io.Serializable;
 

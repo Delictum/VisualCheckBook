@@ -1,27 +1,17 @@
 package com.visualcheckbook.visualcheckbook.Fragments;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
-import com.visualcheckbook.visualcheckbook.MainActivity;
+import com.visualcheckbook.visualcheckbook.Activity.MainActivity;
 import com.visualcheckbook.visualcheckbook.OnSwipeTouchListener;
 import com.visualcheckbook.visualcheckbook.R;
 
