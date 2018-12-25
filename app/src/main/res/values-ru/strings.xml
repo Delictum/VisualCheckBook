@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Visual library book</string>
+    <string name="app_name">Визуальная книжная библиотека</string>
     <string name="select_image_for_text_recognition">Добавьте изображение для перевода</string>
     <string name="find_text_button">Найти книгу</string>
 
@@ -11,7 +11,11 @@
     <string name="drawer_item_contact">Контакты</string>
     <string name="published_by">Published By</string>
     <string name="rotation_button">Поворот</string>
+
     <string name="HelperTextCameraActivity">Чтобы сделать фотографию, нажмите «плюс» или проведите пальцем справа-налево по экрану. После загрузки изображения нажмите «Повернуть» (при необходимости) и нажмите «Найти текст».</string>
     <string name="HelperTextLibraryActivity">Библиотека отображает ваши добавленные книги. При подключении к Интернету вы можете нажать на любую из книг, чтобы увидеть более подробную информацию. Если книг много, вы можете потянуть пальцем сверху-вниз (и наоборот), чтобы увидеть остальные.</string>
     <string name="HelperTextDetailActivity">После того, как книга будет распознана или выбрана в библиотеке, откроется окно с подробной информацией. При нажатии клавиши «Добавить» / «Удалить» книга будет добавлена / удалена в библиотеке.</string>
+
+    <string name="title_about_developer">О разработчике</string>
+    <string name="msg_about_developer">Привет, я Игорь Олишкевич.\nСейчас я являюсь студентом Беларуси из Гродненского колледжа «Бизнеса и Права». Учусь на 4 курсе специальности «Программное обеспечение информационных технологий». Данная программа была разработана на технологическую практику.</string>
 </resources>

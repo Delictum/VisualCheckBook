@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.res.AssetManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -15,23 +14,23 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.provider.MediaStore;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.mikepenz.iconics.typeface.FontAwesome;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.visualcheckbook.visualcheckbook.BookAPI.Book;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookAdapter;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
-import com.visualcheckbook.visualcheckbook.Firebase.GraphicOverlay;
-import com.visualcheckbook.visualcheckbook.Firebase.GraphicOverlay.Graphic;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
@@ -41,23 +40,23 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
+import com.visualcheckbook.visualcheckbook.Helpers.ImageHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-import static android.graphics.BitmapFactory.*;
-
 
 public class MainActivity extends AppCompatActivity {
+    private LinearLayout mainLinearLayout;
+
     private ImageView mImageView;
     private Button mTextButton;
     private Button mCameraButton;
@@ -71,17 +70,18 @@ public class MainActivity extends AppCompatActivity {
     private BookClient client;
     private BookAdapter bookAdapter;
 
-    private Integer mImageMaxWidth; // portrait mode
-    private Integer mImageMaxHeight; // portrait mode
     private Integer angle = 0;
 
-    private String pictureImagePath = "";
-    public static String Isbn = "";
+    private Integer currentPositionDrawerMenu;
+    private Fragment currentFragment;
 
-    public static final String BOOK_DETAIL_KEY = "book";
-    private static final Integer REQUEST_IMAGE_CAPTURE = 1;
+    private String pictureImagePath = "";
+
     public static final String TAG = "VisualCheckBook";
 
+    private final String fileSaveImageName = "temp.jpg";
+    public static final String BOOK_DETAIL_KEY = "book";
+    private static final Integer REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,14 +219,13 @@ public class MainActivity extends AppCompatActivity {
     private void RotateImage() {
         angle += 90;
         mImageView.animate().rotation(angle).start();
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        mSelectedImage = Bitmap.createBitmap(mSelectedImage, 0, 0, mSelectedImage.getWidth(), mSelectedImage.getHeight(), matrix, true);
+        mSelectedImage = ImageHelper.rotateImage(angle, mSelectedImage);
     }
 
     private void initCustomModel() {
         new LockOrientation(this).lock();
+
+        ActivityHelper.initLocaleHelper(this);
 
         initRecognition();
         initCamera();
@@ -237,10 +236,14 @@ public class MainActivity extends AppCompatActivity {
         initSliding();
 
         initListBooks();
+
+        currentPositionDrawerMenu = 1;
+        mainLinearLayout = findViewById(R.id.main_liner_layout);
     }
 
     private void initRotate() {
         mRotationButton = findViewById(R.id.rotate_button);
+        mRotationButton.setEnabled(false);
         mRotationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,11 +307,31 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     // Обработка клика
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+
                         if (drawerItem instanceof Nameable) {
-                            if (position == 2) {
+
+                            setEnabledDrawerItem(position, false);
+                            setEnabledDrawerItem(currentPositionDrawerMenu, true);
+                            if (position == 1) {
+
+                                setVisibilityMainLayout(View.VISIBLE);
+                                getSupportFragmentManager().beginTransaction()
+                                        .remove(currentFragment)
+                                        .commit();
+                            } else if (position == 2) {
+
                                 Intent intent = new Intent(MainActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
-                            } else if (position == 5) {
+                            } else if (position == 4) {
+
+                                setVisibilityMainLayout(View.INVISIBLE);
+                                currentFragment = new SettingsFragment();
+                                getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.container, currentFragment)
+                                        .commit();
+                            }
+                            else if (position == 5) {
+
                                 Intent intent = new Intent(MainActivity.this, HeplerTabActivity.class);
                                 startActivity(intent);
                             }
@@ -327,6 +350,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
+                        currentPositionDrawerMenu = position;
                     }
                 })
                 .withOnDrawerItemLongClickListener(new Drawer.OnDrawerItemLongClickListener() {
@@ -348,61 +373,44 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void setVisibilityMainLayout(int condition) {
+        mainLinearLayout.setVisibility(condition);
+        mImageView.setVisibility(condition);
+    }
 
-    // Returns max image width, always for portrait mode. Caller needs to swap width / height for
-    // landscape mode.
-    private Integer getImageMaxWidth() {
-        if (mImageMaxWidth == null) {
-            // Calculate the max width in portrait mode. This is done lazily since we need to
-            // wait for
-            // a UI layout pass to get the right values. So delay it to first time image
-            // rendering time.
-            mImageMaxWidth = mImageView.getWidth();
+    private void setEnabledDrawerItem(int position, boolean condition) {
+        switch (position) {
+            case 1: {
+                drawerResult.updateItem(new PrimaryDrawerItem()
+                        .withName(R.string.drawer_item_home)
+                        .withIcon(FontAwesome.Icon.faw_camera)
+                        .setEnabled(condition), position);
+                break;
+            }
+            case 2: {
+                drawerResult.updateItem(new PrimaryDrawerItem()
+                        .withName(R.string.drawer_item_library_book)
+                        .withIcon(FontAwesome.Icon.faw_book)
+                        .setEnabled(condition), position);
+                break;
+            }
+            case 4: {
+                drawerResult.updateItem(new SecondaryDrawerItem()
+                        .withName(R.string.drawer_item_settings)
+                        .withIcon(FontAwesome.Icon.faw_cog)
+                        .setEnabled(condition), position);
+                break;
+            }
+            case 5: {
+                drawerResult.updateItem(new SecondaryDrawerItem()
+                        .withName(R.string.drawer_item_help)
+                        .withIcon(FontAwesome.Icon.faw_question)
+                        .setEnabled(condition), position);
+                break;
+            }
         }
-
-        return mImageMaxWidth;
     }
 
-    // Returns max image height, always for portrait mode. Caller needs to swap width / height for
-    // landscape mode.
-    private Integer getImageMaxHeight() {
-        if (mImageMaxHeight == null) {
-            // Calculate the max width in portrait mode. This is done lazily since we need to
-            // wait for
-            // a UI layout pass to get the right values. So delay it to first time image
-            // rendering time.
-            mImageMaxHeight =
-                    mImageView.getHeight();
-        }
-
-        return mImageMaxHeight;
-    }
-
-    // Gets the targeted width / height.
-    private Pair<Integer, Integer> getTargetedWidthHeight() {
-        int targetWidth;
-        int targetHeight;
-        int maxWidthForPortraitMode = getImageMaxWidth();
-        int maxHeightForPortraitMode = getImageMaxHeight();
-        targetWidth = maxWidthForPortraitMode;
-        targetHeight = maxHeightForPortraitMode;
-        return new Pair<>(targetWidth, targetHeight);
-    }
-
-    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
-        AssetManager assetManager = context.getAssets();
-
-        InputStream is;
-        Bitmap bitmap = null;
-        try {
-            is = assetManager.open(filePath);
-            bitmap = decodeStream(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
-    }
 
     //----------------------------------------------------------------------------------------------
 
@@ -416,8 +424,10 @@ public class MainActivity extends AppCompatActivity {
                     mImageView.setImageURI(outputFileUri);
                     mSelectedImage = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
 
-                    if (!mTextButton.isEnabled())
+                    if (!mTextButton.isEnabled()) {
                         mTextButton.setEnabled(true);
+                        mRotationButton.setEnabled(true);
+                    }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 ActivityHelper.showToast("Cancel operation.", getApplicationContext());
@@ -435,10 +445,9 @@ public class MainActivity extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         try {
             //Create place for temp img on absolute dir
-            String imageFileName = "temp.jpg";
             File storageDir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);
-            pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
+            pictureImagePath = storageDir.getAbsolutePath() + "/" + fileSaveImageName;
             File file = new File(pictureImagePath);
             outputFileUri = Uri.fromFile(file);
 

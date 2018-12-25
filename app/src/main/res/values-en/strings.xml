@@ -11,7 +11,16 @@
     <string name="drawer_item_contact">Contact</string>
     <string name="published_by">Published By</string>
     <string name="rotation_button">Rotation</string>
+
     <string name="HelperTextCameraActivity">In order to take a photo, click on the \"plus\" or slide your finger from right to left across the screen. After the image is uploaded, click \"Rotate\" (if necessary) and click \"Find text\".</string>
     <string name="HelperTextLibraryActivity">The library displays your added books. When connected to the Internet, you can click on any of the books to see more detailed information. If there are many books, you can pull your finger from top to bottom (and vice versa) to see the rest.</string>
     <string name="HelperTextDetailActivity">After the book has been recognized or selected in the library, a window will open with detailed information. When you press the \"Add\" / \"Del\" key, the book will be added / removed in the library.</string>
+
+    <string name="title_about_developer">About the developer</string>
+    <string name="msg_about_developer">Hi, I\'m Igor Olishkevich.\nNow I am a student of Belarus from the Grodno College \"Business and Law\". I study on the 4th year of the specialty \"Software of Information Technologies\". This program was developed for technological practice.</string>
+
+    <string-array name="list_language">
+        <item>En</item>
+        <item>Ru</item>
+    </string-array>
 </resources>

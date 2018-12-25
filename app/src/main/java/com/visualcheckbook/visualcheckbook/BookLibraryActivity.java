@@ -2,7 +2,6 @@ package com.visualcheckbook.visualcheckbook;
 
 import cz.msebera.android.httpclient.Header;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -26,6 +24,7 @@ import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.BookModel;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.CustomAdapter;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
+import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;

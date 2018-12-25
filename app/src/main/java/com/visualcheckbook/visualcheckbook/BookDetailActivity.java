@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.visualcheckbook.visualcheckbook.BookAPI.Book;
 import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
+import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
