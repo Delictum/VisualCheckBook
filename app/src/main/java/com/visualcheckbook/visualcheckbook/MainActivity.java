@@ -41,6 +41,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.visualcheckbook.visualcheckbook.Fragments.HelperTabFragment;
 import com.visualcheckbook.visualcheckbook.Fragments.SettingsFragment;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.ImageHelper;
@@ -190,33 +191,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        String ISBN = ParserISBN(allText);
+        String ISBN = IsbnParser.ParserISBN(allText);
         if (ISBN == null)
             ActivityHelper.showToast("Incorrect recognition of ISBN. Take a new photo or try to rotate the image and try again.", getApplicationContext());
         else
             queryBooks(ISBN);
-    }
-
-    private String ParserISBN(String text) {
-        if (isISBN(text)) {
-            text = text.replace("-", "");
-            String isbn = "";
-            for (int i = 0; i < text.length(); i++) {
-                if (text.charAt(i) == ';') {
-                    if (isbn.length() > 8 && isbn.length() < 15 && android.text.TextUtils.isDigitsOnly(isbn)) {
-                        return isbn;
-                    }
-                    isbn = "";
-                    continue;
-                }
-                isbn += text.charAt(i);
-            }
-        }
-        return null;
-    }
-
-    private boolean isISBN(String text) {
-        return text.contains("ISBN");
     }
 
     private void RotateImage() {
@@ -226,8 +205,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCustomModel() {
-        new LockOrientation(this).lock();
 
+        setContentView(R.layout.activity_main);
+        new LockOrientation(this).lock();
         ActivityHelper.initLocaleHelper(this);
 
         initRecognition();
@@ -239,14 +219,14 @@ public class MainActivity extends AppCompatActivity {
         initSliding();
 
         initListBooks();
+        initQuestionExitDialog();
 
         currentPositionDrawerMenu = 1;
         mainLinearLayout = findViewById(R.id.main_liner_layout);
-
-        initQuestionExitDialog();
     }
 
     private void initRotate() {
+
         mRotationButton = findViewById(R.id.rotate_button);
         mRotationButton.setEnabled(false);
         mRotationButton.setOnClickListener(new View.OnClickListener() {
@@ -258,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSliding() {
+
         mImageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void onSwipeRight() {
 
@@ -275,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecognition() {
-        setContentView(R.layout.activity_main);
+
         mImageView = findViewById(R.id.image_view);
         mTextButton = findViewById(R.id.button_text);
 
@@ -291,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCamera() {
+
         mCameraButton = findViewById(R.id.camera_button);
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,12 +356,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void initToolbar() {
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initQuestionExitDialog() {
+
         mExitDialog = new AlertDialog.Builder(this, R.style.AlertDialogCustom)
                 .setIcon(R.drawable.ic_book)
                 .setMessage(R.string.message_question_exit_dialog);

@@ -24,6 +24,7 @@ import com.visualcheckbook.visualcheckbook.BookAPI.BookClient;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.BookModel;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.CustomAdapter;
 import com.visualcheckbook.visualcheckbook.BooksDataBase.DatabaseHelper;
+import com.visualcheckbook.visualcheckbook.Fragments.HelperTabFragment;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 
 import org.json.JSONArray;

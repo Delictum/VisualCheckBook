@@ -1,4 +1,4 @@
-package com.visualcheckbook.visualcheckbook;
+package com.visualcheckbook.visualcheckbook.Fragments;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -21,6 +21,9 @@ import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
+import com.visualcheckbook.visualcheckbook.MainActivity;
+import com.visualcheckbook.visualcheckbook.OnSwipeTouchListener;
+import com.visualcheckbook.visualcheckbook.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

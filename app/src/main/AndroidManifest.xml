@@ -30,7 +30,7 @@
         </activity>
         <activity android:name=".BookLibraryActivity" />
         <activity android:name=".BookDetailActivity" />
-        <activity android:name=".HelperTabFragment" />
+        <activity android:name=".Fragments.HelperTabFragment" />
 
         <!-- For auto download firebase components with setup app -->
         <meta-data
