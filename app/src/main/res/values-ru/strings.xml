@@ -18,4 +18,8 @@
 
     <string name="title_about_developer">О разработчике</string>
     <string name="msg_about_developer">Привет, я Игорь Олишкевич.\nСейчас я являюсь студентом Беларуси из Гродненского колледжа «Бизнеса и Права». Учусь на 4 курсе специальности «Программное обеспечение информационных технологий». Данная программа была разработана на технологическую практику.</string>
+
+    <string name="message_question_exit_dialog">Желаете выйти?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

@@ -1,10 +1,12 @@
 package com.visualcheckbook.visualcheckbook;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mCameraButton;
     private Button mRotationButton;
     private Bitmap mSelectedImage;
+    private AlertDialog.Builder mExitDialog;
 
     public Toolbar mToolbar;
     public Drawer.Result drawerResult = null;
@@ -239,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
 
         currentPositionDrawerMenu = 1;
         mainLinearLayout = findViewById(R.id.main_liner_layout);
+
+        initQuestionExitDialog();
     }
 
     private void initRotate() {
@@ -373,6 +378,19 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initQuestionExitDialog() {
+        mExitDialog = new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+                .setIcon(R.drawable.ic_book)
+                .setMessage(R.string.message_question_exit_dialog);
+
+        mExitDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick (DialogInterface dialog,int arg1){
+                        finish();
+                    }
+                });
+        mExitDialog.setNegativeButton(R.string.no, null);
+    }
+
     private void setVisibilityMainLayout(int condition) {
         mainLinearLayout.setVisibility(condition);
         mImageView.setVisibility(condition);
@@ -410,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     //----------------------------------------------------------------------------------------------
 
@@ -470,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
         if (drawerResult.isDrawerOpen()) {
             drawerResult.closeDrawer();
         } else {
-            super.onBackPressed();
+            mExitDialog.show();
         }
     }
 }

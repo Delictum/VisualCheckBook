@@ -19,6 +19,10 @@
     <string name="title_about_developer">About the developer</string>
     <string name="msg_about_developer">Hi, I\'m Igor Olishkevich.\nNow I am a student of Belarus from the Grodno College \"Business and Law\". I study on the 4th year of the specialty \"Software of Information Technologies\". This program was developed for technological practice.</string>
 
+    <string name="message_question_exit_dialog">Would you like to go out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string-array name="list_language">
         <item>En</item>
         <item>Ru</item>
