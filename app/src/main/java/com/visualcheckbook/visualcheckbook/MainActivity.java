@@ -2,7 +2,6 @@ package com.visualcheckbook.visualcheckbook;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -42,6 +41,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.visualcheckbook.visualcheckbook.Fragments.SettingsFragment;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.ImageHelper;
 
@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap mSelectedImage;
     private AlertDialog.Builder mExitDialog;
 
-    public Toolbar mToolbar;
-    public Drawer.Result drawerResult = null;
+    public static Toolbar mToolbar;
+    public static Drawer.Result drawerResult = null;
 
     private Uri outputFileUri;
     private BookClient client;
@@ -331,16 +331,14 @@ public class MainActivity extends AppCompatActivity {
 
                                 setVisibilityMainLayout(View.INVISIBLE);
                                 currentFragment = new SettingsFragment();
-                                getSupportFragmentManager().beginTransaction()
-                                        .add(R.id.container, currentFragment)
-                                        .commit();
                             }
                             else if (position == 5) {
 
-                                Intent intent = new Intent(MainActivity.this, HeplerTabActivity.class);
-                                startActivity(intent);
+                                setVisibilityMainLayout(View.INVISIBLE);
+                                currentFragment = new HelperTabFragment();
                             }
                         }
+
                         if (drawerItem instanceof Badgeable) {
                             Badgeable badgeable = (Badgeable) drawerItem;
                             if (badgeable.getBadge() != null) {
@@ -356,6 +354,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, currentFragment)
+                                .commit();
                         currentPositionDrawerMenu = position;
                     }
                 })

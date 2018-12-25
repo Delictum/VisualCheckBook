@@ -1,4 +1,4 @@
-package com.visualcheckbook.visualcheckbook;
+package com.visualcheckbook.visualcheckbook.Fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,27 +10,44 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.CustomSettingsHelper;
 import com.visualcheckbook.visualcheckbook.Helpers.LocaleHelper;
+import com.visualcheckbook.visualcheckbook.MainActivity;
+import com.visualcheckbook.visualcheckbook.OnSwipeTouchListener;
+import com.visualcheckbook.visualcheckbook.R;
 
 import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
 
+    private LinearLayout mLinearLayout;
+
     private boolean first = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        Button updateButton = (Button) view.findViewById(R.id.updateButton);
-        final TextView updateBox = (TextView) view.findViewById(R.id.textBox);
+        initCustomModel(view);
+        return view;
+    }
 
-        updateButton.setOnClickListener(new View.OnClickListener() {
+    private void initCustomModel(View view) {
+        initAboutDeveloper(view);
+        initSelectLanguage(view);
+        initSliding(view);
+    }
+
+    private void initAboutDeveloper(View view) {
+        Button aboutDeveloper = (Button) view.findViewById(R.id.about_developer);
+
+        aboutDeveloper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -48,7 +65,9 @@ public class SettingsFragment extends Fragment {
                 alert.show();
             }
         });
+    }
 
+    private void initSelectLanguage(View view) {
         final Spinner spinner = (Spinner) view.findViewById(R.id.select_language_spinner);
 
         CharSequence[] entries = getResources().getTextArray(R.array.list_language);
@@ -83,11 +102,19 @@ public class SettingsFragment extends Fragment {
                 LocaleHelper.setLocale(locale, getActivity());
                 ActivityHelper.refreshActivity(getActivity());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
+    }
 
-        return view;
+    private void initSliding(View view) {
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.settings_linear_layout);
+        mLinearLayout.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            public void onSwipeRight() {
+                MainActivity.drawerResult.openDrawer();
+            }
+        });
     }
 }

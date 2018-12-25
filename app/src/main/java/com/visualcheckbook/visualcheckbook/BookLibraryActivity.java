@@ -81,7 +81,7 @@ public class BookLibraryActivity extends AppCompatActivity {
                                 Intent intent = new Intent(BookLibraryActivity.this, MainActivity.class);
                                 startActivity(intent);
                             } else if (position == 5) {
-                                Intent intent = new Intent(BookLibraryActivity.this, HeplerTabActivity.class);
+                                Intent intent = new Intent(BookLibraryActivity.this, HelperTabFragment.class);
                                 startActivity(intent);
                             }
                         }

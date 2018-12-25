@@ -125,7 +125,7 @@ public class BookDetailActivity extends AppCompatActivity {
                                 Intent intent = new Intent(BookDetailActivity.this, BookLibraryActivity.class);
                                 startActivity(intent);
                             } else if(position == 5) {
-                                Intent intent = new Intent(BookDetailActivity.this, HeplerTabActivity.class);
+                                Intent intent = new Intent(BookDetailActivity.this, HelperTabFragment.class);
                                 startActivity(intent);
                             }
                         }
