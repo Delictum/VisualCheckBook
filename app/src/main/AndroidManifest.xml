@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BookLibraryActivity" />
+        <activity android:name=".Fragments.BookLibraryActivity" />
         <activity android:name=".BookDetailActivity" />
         <activity android:name=".Fragments.HelperTabFragment" />
 

@@ -41,6 +41,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Badgeable;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
+import com.visualcheckbook.visualcheckbook.Fragments.BookLibraryActivity;
 import com.visualcheckbook.visualcheckbook.Fragments.HelperTabFragment;
 import com.visualcheckbook.visualcheckbook.Fragments.SettingsFragment;
 import com.visualcheckbook.visualcheckbook.Helpers.ActivityHelper;
@@ -307,8 +308,8 @@ public class MainActivity extends AppCompatActivity {
                                         .commit();
                             } else if (position == 2) {
 
-                                Intent intent = new Intent(MainActivity.this, BookLibraryActivity.class);
-                                startActivity(intent);
+                                setVisibilityMainLayout(View.INVISIBLE);
+                                currentFragment = new BookLibraryActivity();
                             } else if (position == 4) {
 
                                 setVisibilityMainLayout(View.INVISIBLE);
