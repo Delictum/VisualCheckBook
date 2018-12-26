@@ -26,6 +26,16 @@
     <string name="language">Язык</string>
     <string name="start_screen">Начальный экран</string>
 
+    <string name="does_not_contain_book">К сожалению в библиотеке нет данных по книге.</string>
+    <string name="problem_server_connection">Проблема соединения с сервером.</string>
+    <string name="text_not_found">Текст не найден.</string>
+    <string name="incorrect_recognition_isbn">Некорректно распознанный ISBN. Сделайте новую фотографию (или поверните изображение) и попробуйте снова.</string>
+    <string name="cancel_operation">Отмена операции.</string>
+    <string name="error_receiving_photos">Ошибка во время снимка фото.</string>
+    <string name="device_not_support_shooting">Ваще устройство не поддерживает съемку фото.</string>
+    <string name="save_complete">Успешно сохранено!</string>
+    <string name="del_complete">Успешно удалено!</string>
+
     <string-array name="list_start_screen">
         <item>Камера</item>
         <item>Библиотека</item>

@@ -67,8 +67,8 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity {
     private LinearLayout mainLinearLayout;
 
-    private ImageView mImageView;
-    private Button mTextButton;
+    private ImageView mCameraImageView;
+    private Button mTextRecognitionButton;
     private Button mCameraButton;
     private Button mRotationButton;
     private Bitmap mSelectedImage;
@@ -81,19 +81,20 @@ public class MainActivity extends AppCompatActivity {
     private BookClient client;
     private BookAdapter bookAdapter;
 
-    private Integer angle = 0;
+    private Integer angleRotate = 0;
+    private final Integer ROTATE_IMAGE = 90;
 
     private Integer currentPositionDrawerMenu;
     private Fragment currentFragment;
 
     private String pictureImagePath = "";
 
-    public static final String TAG = "VisualCheckBook";
-    public static final String VERSION = "1.0.1";
-
     private final String fileSaveImageName = "temp.jpg";
     public static final String BOOK_DETAIL_KEY = "book";
     private static final Integer REQUEST_IMAGE_CAPTURE = 1;
+
+    public static final String TAG = "VisualCheckBook";
+    public static final String VERSION = "1.0.2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         final ArrayList<Book> books = Book.fromJson(docs);
 
                         if (books == null) {
-                            ActivityHelper.showToast("Unfortunately the library does not contain data on the book.", getApplicationContext());
+                            ActivityHelper.showToast(getString(R.string.does_not_contain_book), getApplicationContext());
                             return;
                         }
 
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                ActivityHelper.showToast("Problem connecting to server.", getApplicationContext());
+                ActivityHelper.showToast(getString(R.string.problem_server_connection), getApplicationContext());
             }
         });
     }
@@ -159,13 +160,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mSelectedImage);
         FirebaseVisionTextRecognizer recognizer = FirebaseVision.getInstance()
                 .getOnDeviceTextRecognizer();
-        mTextButton.setEnabled(false);
+        mTextRecognitionButton.setEnabled(false);
         recognizer.processImage(image)
                 .addOnSuccessListener(
                         new OnSuccessListener<FirebaseVisionText>() {
                             @Override
                             public void onSuccess(FirebaseVisionText texts) {
-                                mTextButton.setEnabled(true);
+                                mTextRecognitionButton.setEnabled(true);
                                 processTextRecognitionResult(texts);
                             }
                         })
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Task failed with an exception
-                                mTextButton.setEnabled(true);
+                                mTextRecognitionButton.setEnabled(true);
                                 e.printStackTrace();
                             }
                         });
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
         if (blocks.size() == 0) {
-            ActivityHelper.showToast("No text found.", getApplicationContext());
+            ActivityHelper.showToast(getString(R.string.text_not_found), getApplicationContext());
             return;
         }
 
@@ -201,15 +202,15 @@ public class MainActivity extends AppCompatActivity {
 
         String ISBN = IsbnParser.ParserISBN(allText);
         if (ISBN == null)
-            ActivityHelper.showToast("Incorrect recognition of ISBN. Take a new photo or try to rotate the image and try again.", getApplicationContext());
+            ActivityHelper.showToast(getString(R.string.incorrect_recognition_isbn), getApplicationContext());
         else
             queryBooks(ISBN);
     }
 
     private void RotateImage() {
-        angle += 90;
-        mImageView.animate().rotation(angle).start();
-        mSelectedImage = ImageHelper.rotateImage(angle, mSelectedImage);
+        angleRotate += ROTATE_IMAGE;
+        mCameraImageView.animate().rotation(angleRotate).start();
+        mSelectedImage = ImageHelper.rotateImage(angleRotate, mSelectedImage);
     }
 
     private void initCustomModel() {
@@ -231,6 +232,10 @@ public class MainActivity extends AppCompatActivity {
 
         mainLinearLayout = findViewById(R.id.main_liner_layout);
 
+        currentPositionDrawerMenu = initStartScreen();
+    }
+
+    private int initStartScreen() {
         int valueStartScreen = CustomSettingsHelper.getPositionStartScreen(this);
         setEnabledDrawerItem(valueStartScreen == 0 ? 1 : valueStartScreen, false);
         switch (valueStartScreen) {
@@ -252,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.container, currentFragment)
                     .commit();
         }
-        currentPositionDrawerMenu = ++valueStartScreen;
+        return ++valueStartScreen;
     }
 
     private void initRotate() {
@@ -269,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSliding() {
 
-        mImageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+        mCameraImageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void onSwipeRight() {
 
                 drawerResult.openDrawer();
@@ -287,18 +292,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecognition() {
 
-        mImageView = findViewById(R.id.image_view);
-        mTextButton = findViewById(R.id.button_text);
+        mCameraImageView = findViewById(R.id.image_view);
+        mTextRecognitionButton = findViewById(R.id.button_text);
 
         //Set event for button
-        mTextButton.setOnClickListener(new View.OnClickListener() {
+        mTextRecognitionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 runTextRecognition();
             }
         });
 
-        mTextButton.setEnabled(false);
+        mTextRecognitionButton.setEnabled(false);
     }
 
     private void initCamera() {
@@ -414,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setVisibilityMainLayout(int condition) {
         mainLinearLayout.setVisibility(condition);
-        mImageView.setVisibility(condition);
+        mCameraImageView.setVisibility(condition);
     }
 
     private void setEnabledDrawerItem(int position, boolean condition) {
@@ -450,32 +455,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //----------------------------------------------------------------------------------------------
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 File imgFile = new File(pictureImagePath);
                 if (imgFile.exists()) {
-                    mImageView.setImageResource(0);
-                    mImageView.setImageURI(outputFileUri);
-                    mSelectedImage = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
+                    mCameraImageView.setImageResource(0);
+                    mCameraImageView.setImageURI(outputFileUri);
+                    mSelectedImage = ((BitmapDrawable) mCameraImageView.getDrawable()).getBitmap();
 
-                    if (!mTextButton.isEnabled()) {
-                        mTextButton.setEnabled(true);
+                    if (!mTextRecognitionButton.isEnabled()) {
+                        mTextRecognitionButton.setEnabled(true);
                         mRotationButton.setEnabled(true);
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                ActivityHelper.showToast("Cancel operation.", getApplicationContext());
+                ActivityHelper.showToast(getString(R.string.cancel_operation), getApplicationContext());
             } else {
                 throw new Exception();
             }
         } catch (Exception e) {
-            ActivityHelper.showToast("Error receiving photos.", getApplicationContext());
+            ActivityHelper.showToast(getString(R.string.error_receiving_photos), getApplicationContext());
             if (BuildConfig.DEBUG) {
-                Log.w(TAG, "Error receiving photos", e);
+                Log.w(TAG, getString(R.string.error_receiving_photos), e);
             }
         }
     }
@@ -496,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
 
         } catch (ActivityNotFoundException e) {
-            ActivityHelper.showToast("Your device does not support shooting.", getApplicationContext());
+            ActivityHelper.showToast(getString(R.string.device_not_support_shooting), getApplicationContext());
             if (BuildConfig.DEBUG) {
                 Log.e(TAG, "Device does not support shooting", e);
             }

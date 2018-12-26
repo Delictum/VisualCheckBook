@@ -80,11 +80,11 @@ public class BookDetailActivity extends AppCompatActivity {
                 String btnName = currentStateButton.getText().toString();
                 if (btnName.contains("Add")) {
                     databaseHelper.addBook(Isbn, tvTitle.getText().toString(), tvAuthor.getText().toString());
-                    ActivityHelper.showToast("Saved successfully!", getApplicationContext());
+                    ActivityHelper.showToast(getString(R.string.save_complete), getApplicationContext());
                     mAddButton.setText("Del");
                 } else {
                     databaseHelper.deleteBook(Isbn);
-                    ActivityHelper.showToast("Successfully deleted!", getApplicationContext());
+                    ActivityHelper.showToast(getString(R.string.del_complete), getApplicationContext());
                     mAddButton.setText("Add");
                 }
             }

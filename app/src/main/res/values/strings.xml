@@ -26,6 +26,16 @@
     <string name="language">Language</string>
     <string name="start_screen">Start screen</string>
 
+    <string name="does_not_contain_book">Unfortunately the library does not contain data on the book.</string>
+    <string name="problem_server_connection">Problem connecting to server.</string>
+    <string name="text_not_found">No text found.</string>
+    <string name="incorrect_recognition_isbn">Incorrect recognition of ISBN. Take a new photo or try to rotate the image and try again.</string>
+    <string name="cancel_operation">Cancel operation.</string>
+    <string name="error_receiving_photos">Error receiving photos.</string>
+    <string name="device_not_support_shooting">Your device does not support shooting.</string>
+    <string name="save_complete">Saved successfully!</string>
+    <string name="del_complete">Successfully deleted!</string>
+
     <string-array name="list_language">
         <item>En</item>
         <item>Ru</item>

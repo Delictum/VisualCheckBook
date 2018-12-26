@@ -107,7 +107,7 @@ public class BookLibraryFragment extends Fragment {
                         final ArrayList<Book> books = Book.fromJson(docs);
 
                         if (books == null) {
-                            ActivityHelper.showToast("Unfortunately the library does not contain data on the book.", getContext());
+                            ActivityHelper.showToast(getString(R.string.does_not_contain_book), getContext());
                             return;
                         }
 
@@ -134,7 +134,7 @@ public class BookLibraryFragment extends Fragment {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                ActivityHelper.showToast("Problem connecting to server.", getContext());
+                ActivityHelper.showToast(getString(R.string.problem_server_connection), getContext());
             }
         });
     }
