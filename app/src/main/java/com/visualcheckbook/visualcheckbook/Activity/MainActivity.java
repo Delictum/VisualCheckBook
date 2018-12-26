@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private String pictureImagePath = "";
 
     public static final String TAG = "VisualCheckBook";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
 
     private final String fileSaveImageName = "temp.jpg";
     public static final String BOOK_DETAIL_KEY = "book";
@@ -366,6 +366,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         if (position != 0) {
+                            if (position == 4) {
+                                SettingsFragment settingsFragment = (SettingsFragment) currentFragment;
+                                settingsFragment.first = true;
+                                currentFragment = settingsFragment;
+                            }
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.container, currentFragment)
                                     .commit();

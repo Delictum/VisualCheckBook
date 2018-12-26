@@ -29,7 +29,7 @@ public class SettingsFragment extends Fragment {
 
     private LinearLayout mLinearLayout;
 
-    private boolean first = true;
+    public static boolean first = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
